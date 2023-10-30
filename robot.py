@@ -17,20 +17,20 @@ class Robot:
         #   yMin: the minimum Y coordinate of the taskspace
         #   yMax: the maximum Y coordinate of the taskspace
         '''
-        self.gridSize = gridSize
-        self.xRange = [xMin, xMax]
-        self.yRange = [yMin, yMax]
-        self.start = [0,0]
-        self.goal = [0,0]
-        self.stepCost = 1
-        self.obsCost = 1000
-        self.robotTargets = []
-        self.landmarkGT = {}
-        self.occupiedCells = []
-        self.knownOccupiedCells = []
-        self.odometry = []
-        self.simulatedRobotStates = []
-        self.robotStates = []
+        self.gridSize = gridSize        # side length of grid cells
+        self.xRange = [xMin, xMax]      # range of X coordinates in the taskspace
+        self.yRange = [yMin, yMax]      # range of Y coordinates in the taskspace
+        self.start = [0,0]              # the start posiiton 
+        self.goal = [0,0]               # the goal position
+        self.stepCost = 1               # the cost of moving to an open cell
+        self.obsCost = 1000             # the cost of moving to a cell with an obstacle in it
+        self.robotTargets = []          # the list of targets for the robot to move to
+        self.landmarkGT = {}            # the imported landmark data
+        self.occupiedCells = []         # a list of cells with obstacles in them
+        self.knownOccupiedCells = []    # a list of cells that the robot knows have obstacles in them
+        self.odometry = []              # a list of the odometry commands given to the robot
+        self.simulatedRobotStates = []  # the robot states calculated when simulating moving along a planned path
+        self.robotStates = []           # the robot states calculated when moving along a planned path
 
 
     ############### MAIN FUNCTION ###############
@@ -288,6 +288,19 @@ class Robot:
 
 
     def generate_and_exectue_odometry(self, initialState, targetPos, initialCell, maxOmegaNoise=0.0):
+        '''
+        Description:
+            Moves the robot through the environment along its planned path until it is in a new cell
+        Inputs:
+            initialState: The intial state of the robot [x, y, theta, vel, omega]
+            targetPos: The goal location [x, y]
+            intialCell: The starting cell of the robot
+            maxOmegaNoise: The maximum amount of rotation noise added to each step of the simulated robot movement
+        Returns:
+            currentState: the final state of the robot when it reaches a new cell
+            [currentCellX, currentCellY]: the new cell of the robot
+            stateList: a list of the robots states before it entered the new cell
+        '''
         maxLinVel = 0.25
         dt = 0.1
         P_theta = 20.0
@@ -331,7 +344,17 @@ class Robot:
         
 
     def execute_odometry(self, velCommand, omegaCommand, timeStep, state, maxOmegaNoise=0.0):
-        # this fucntion calculates the new position and orientation of the robot based on the previous location and oriantationa and the command sent to the robot
+        '''
+        Description:
+            This fucntion calculates the new position and orientation of the robot based on the previous location and oriantationa and the command sent to the robot
+        Inputs:
+            velCommand: The commanded velcoity 
+            omegaCommand: The commanded angular velocity 
+            timeStep: The time between each odometry execution
+            state: The current state of the robot [x, y, theta, vel, omega]
+        Returns:
+            [xNew, yNew, thetaNew, vel, omega]: the new state of the robot after executing a command
+        '''
         maxAngAcc = 5.579
         maxLinAcc = 0.288
         maxDeltaVel = maxLinAcc * timeStep
@@ -390,7 +413,12 @@ class Robot:
     ############### MAP CONFIGURATION FUNCTIONS ###############
 
     def import_landmark_GT(self, filename): 
-        # Imports data from specified file. File should be in same directory as the python files
+        '''
+        Description:
+            Imports landmark location data from specified file. File should be in same directory as the python files
+        Inputs:
+            filename: the name of the file to be importefd
+        '''
         print('Importing landmark groundtruth data from file "' + filename + '"...')
         data = np.genfromtxt(filename, skip_header=4)
         countMax = len(data)
@@ -406,7 +434,10 @@ class Robot:
 
 
     def mark_occupied_cells(self):
-        # Marks cells that are occupied by landmarks
+        '''
+        Description:
+            Adds cells occupied by landmarks to the occupiedCells list 
+        '''
         for landmark in self.landmarkGT:
             xPos = int(np.floor((self.landmarkGT[landmark][0] - self.xRange[0]) / self.gridSize))
             yPos = int(np.floor((self.landmarkGT[landmark][1] - self.yRange[0]) / self.gridSize))
@@ -416,6 +447,10 @@ class Robot:
 
 
     def expand_occupied_cells(self):
+        '''
+        Description:
+            Adds the neighbors of every occupied cell to the occupiedCells list if they are not already on the list
+        '''
         modifiers = [-1, 0, 1]
         obsExpanded = []
         for cell in self.occupiedCells:
@@ -433,7 +468,12 @@ class Robot:
     ############### PLOTTING AND GRAPHING FUNCTIONS ###############
 
     def plot_landmark_cells(self, ax):
-        # Plots the locations on the landmarks
+        '''
+        Description:
+            Plots the locations on the landmarks
+        Inputs:
+            ax: The axis to be plotted on
+        '''
         for cell in self.occupiedCells:
             xPos = cell[0] * self.gridSize + self.xRange[0]
             yPos = cell[1] * self.gridSize + self.yRange[0]
@@ -441,7 +481,12 @@ class Robot:
 
 
     def plot_visited_cells(self, ax):
-        # Plots the locations on the landmarks
+        '''
+        Description:
+            Marks cells on the graph that the robot has visited
+        Inputs:
+            ax: The axis to be plotted on
+        '''
         visitedCells = []
         if self.robotStates ==[]:
             states = self.simulatedRobotStates
@@ -465,7 +510,12 @@ class Robot:
 
 
     def plot_start_goal(self, ax):
-        # Plots the locations on the start and goal cell
+        '''
+        Description:
+            Marks the locations on the start and goal cell
+        Inputs:
+            ax: The axis to be plotted on
+        '''
         startCell = self.pos_to_cell(self.start)
         goalCell = self.pos_to_cell(self.goal)
         [startX, startY] = self.cell_to_pos(startCell)
@@ -481,7 +531,12 @@ class Robot:
 
 
     def plot_robot_targets(self,ax):
-        # function to plot the robot path
+        '''
+        Description:
+            Plots the planned path 
+        Inputs:
+            ax: The axis to be plotted on
+        '''
         robX = []
         robY = []
         for pos in self.robotTargets:
@@ -493,7 +548,12 @@ class Robot:
 
 
     def plot_robot_movement(self,ax):
-        # function to plot the robot path
+        '''
+        Description:
+            Plots the movement of the robot 
+        Inputs:
+            ax: The axis to be plotted on
+        '''
         statesX = []
         statesY = []
         dirsX = []
@@ -521,7 +581,12 @@ class Robot:
 
 
     def plot_simulated_movement(self,ax):
-        # function to plot the robot path
+        '''
+        Description:
+            Plots the simulated movement of the robot 
+        Inputs:
+            ax: The axis to be plotted on
+        '''
         statesX = []
         statesY = []
         dirsX = []
@@ -549,6 +614,14 @@ class Robot:
 
 
     def grid_config(self, ax, gridSize, title):
+        '''
+        Description:
+            Configures an axis to show a grid of cells
+        Inputs:
+            ax: The axis to be plotted on
+            gridSize: The length of the sides of the cells shown on the graph 
+            title: The desired title for the graph (string)
+        '''
         plt.xlim(self.xRange[0], self.xRange[1])
         plt.ylim(self.yRange[0], self.yRange[1])
         plt.grid(which='minor')
@@ -567,12 +640,22 @@ class Robot:
     ############### RESET FUNCTIONS ###############
 
     def reset_robot_path_data(self):
+        '''
+        Description:
+            Resets all robot path planning data
+        '''
         self.start = [0,0]
         self.goal = [0,0]
         self.robotTargets = []
 
 
     def reset_robot_movement_data(self):
+        '''
+        Description:
+            Resets all robot movement data
+        '''
+        self.start = [0,0]
+        self.goal = [0,0]
         self.odometry = []
         self.robotStates = []
         self.simulatedRobotStates = []
@@ -582,6 +665,14 @@ class Robot:
     ############### CONVERSION FUNCTIONS ###############
 
     def pos_to_cell(self, pos):
+        '''
+        Description:
+            Returns the cell that corresponds with a given position on the grid
+        Inputs:
+            pos: the position to be evaulated [x,y]
+        Returns:
+            cell: the cell in which the pos is located [xCell, yCell]
+        '''
         cellX = int(np.floor((pos[0] - self.xRange[0]) / self.gridSize))
         cellY = int(np.floor((pos[1] - self.yRange[0]) / self.gridSize))
         cell = [cellX, cellY]
@@ -589,6 +680,14 @@ class Robot:
 
 
     def cell_to_pos(self, cell):
+        '''
+        Description:
+            Returns the positon of the center of a given cell on the grid
+        Inputs:
+            cell: the cell to be evaluated [xCell, yCell]
+        Returns:
+            pos: the center point of the cell [x,y]
+        '''
         posX = ((cell[0] + 0.5) * self.gridSize) + self.xRange[0]
         posY = ((cell[1] + 0.5) * self.gridSize) + self.yRange[0]
         pos = [posX, posY]

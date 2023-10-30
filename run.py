@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Configuration Variables
-xMin = -2
-xMax = 5
-yMin = -6
-yMax = 6
-gridSizeA = 1
-gridSizeB = 0.1
-filenameLandmarks = "ds1_Landmark_Groundtruth.dat"
-figsize=(5,8)        #(3.2, 4)
+xMin = -2       # The minimum X coordinate of the taskspace
+xMax = 5       # The maximum X coordinate of the taskspace
+yMin = -6       # The minimum Y coordinate of the taskspace
+yMax = 6       # The maximum Y coordinate of the taskspace
+gridSizeA = 1          # The side length of the cells in a course grid
+gridSizeB = 0.1         # The side length of the cells in a fine grid
+filenameLandmarks = "ds1_Landmark_Groundtruth.dat"      # Finename of file containing the position of the obstacles
+figsize=(5,8)        #(3.2, 4)          # The size of the output figure
 
 # Create robot objects with large and small grid sizes
 robot_large_grid = Robot(gridSizeA, xMin, xMax, yMin, yMax)
