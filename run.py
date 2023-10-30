@@ -1,6 +1,6 @@
 from robot import Robot
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MultipleLocator
+import numpy as np
 
 # Configuration Variables
 xMin = -2
@@ -9,193 +9,167 @@ yMin = -6
 yMax = 6
 gridSizeA = 1
 gridSizeB = 0.1
-filenameLandmarks = "ds0_Landmark_Groundtruth.dat"
+filenameLandmarks = "ds1_Landmark_Groundtruth.dat"
+figsize=(5,8)        #(3.2, 4)
 
+# Create robot objects with large and small grid sizes
 robot_large_grid = Robot(gridSizeA, xMin, xMax, yMin, yMax)
+robot_small_grid = Robot(gridSizeB, xMin, xMax, yMin, yMax)
+
+# Import landmark locations to both robot objects
 robot_large_grid.import_landmark_GT(filenameLandmarks)
-robot_large_grid.mark_occupied_cells()
+robot_small_grid.import_landmark_GT(filenameLandmarks)
+
+
 
 # QUESTION 3
 
 # CASE A
-robot_large_grid.a_star([0.5, -1.5], [0.5, 1.5])
 # Create plot
-fig, ax = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_large_grid.plot_landmark_pos(ax)
-robot_large_grid.plot_start_goal(ax)
-ax.set_aspect(1)
-ax.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case A (Question 3)')
-ax.xaxis.set_major_locator(MultipleLocator(1))
-ax.yaxis.set_major_locator(MultipleLocator(1))
-ax.xaxis.set_minor_locator(MultipleLocator(gridSizeA))
-ax.yaxis.set_minor_locator(MultipleLocator(gridSizeA))
-ax.legend()
+fig, ax1 = plt.subplots(figsize=figsize)
+# Run A* navigation to generate path
+robot_large_grid.a_star_navigation_interface([0.5, -1.5], [0.5, 1.5], ax=ax1, title='Robot Path, Large Grid, A*, Case A (Question 3)', online=False, simulate=False, execute=False)
 
 # CASE B
-robot_large_grid.reset_robot_path_data()
-robot_large_grid.a_star([4.5, 3.5], [4.5, -1.5])
 # Create plot
-fig, bx = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_large_grid.plot_landmark_pos(bx)
-robot_large_grid.plot_start_goal(bx)
-bx.set_aspect(1)
-bx.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case B (Question 3)')
-bx.xaxis.set_major_locator(MultipleLocator(1))
-bx.yaxis.set_major_locator(MultipleLocator(1))
-bx.xaxis.set_minor_locator(MultipleLocator(gridSizeA))
-bx.yaxis.set_minor_locator(MultipleLocator(gridSizeA))
-bx.legend()
+fig, ax2 = plt.subplots(figsize=figsize)
+# Run A* navigation to generate path
+robot_large_grid.a_star_navigation_interface([4.5, 3.5], [4.5, -1.5], ax=ax2, title='Robot Path, Large Grid, A*, Case B (Question 3)', online=False, simulate=False, execute=False)
 
 # CASE C
-robot_large_grid.reset_robot_path_data()
-robot_large_grid.a_star([-0.5, 5.5], [1.5, -3.5])
 # Create plot
-fig, cx = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_large_grid.plot_landmark_pos(cx)
-robot_large_grid.plot_start_goal(cx)
-cx.set_aspect(1)
-cx.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case C (Question 3)')
-cx.xaxis.set_major_locator(MultipleLocator(1))
-cx.yaxis.set_major_locator(MultipleLocator(1))
-cx.xaxis.set_minor_locator(MultipleLocator(gridSizeA))
-cx.yaxis.set_minor_locator(MultipleLocator(gridSizeA))
-cx.legend()
+fig, ax3 = plt.subplots(figsize=figsize)
+# Run A* navigation to generate path
+robot_large_grid.a_star_navigation_interface([-0.5, 5.5], [1.5, -3.5], ax=ax3, title='Robot Path, Large Grid, A*, Case C (Question 3)', online=False, simulate=False, execute=False)
+
 
 
 # QUESTION 5
 
 # CASE A
-robot_large_grid.reset_robot_path_data()
-robot_large_grid.a_star([0.5, -1.5], [0.5, 1.5])
 # Create plot
-fig, dx = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_large_grid.plot_landmark_pos(dx)
-robot_large_grid.plot_start_goal(dx)
-dx.set_aspect(1)
-dx.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case A (Question 5)')
-dx.xaxis.set_major_locator(MultipleLocator(1))
-dx.yaxis.set_major_locator(MultipleLocator(1))
-dx.xaxis.set_minor_locator(MultipleLocator(gridSizeA))
-dx.yaxis.set_minor_locator(MultipleLocator(gridSizeA))
-dx.legend()
+fig, ax4 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path
+robot_large_grid.a_star_navigation_interface([0.5, -1.5], [0.5, 1.5], ax=ax4, title='Robot Path, Large Grid, A* Online, Case A (Question 5)', online=True, simulate=False, execute=False)
 
 # CASE B
-robot_large_grid.reset_robot_path_data()
-robot_large_grid.a_star([4.5, 3.5], [4.5, -1.5])
 # Create plot
-fig, ex = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_large_grid.plot_landmark_pos(ex)
-robot_large_grid.plot_start_goal(ex)
-ex.set_aspect(1)
-ex.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case B (Question 5)')
-ex.xaxis.set_major_locator(MultipleLocator(1))
-ex.yaxis.set_major_locator(MultipleLocator(1))
-ex.xaxis.set_minor_locator(MultipleLocator(gridSizeA))
-ex.yaxis.set_minor_locator(MultipleLocator(gridSizeA))
-ex.legend()
+fig, ax5 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path
+robot_large_grid.a_star_navigation_interface([4.5, 3.5], [4.5, -1.5], ax=ax5, title='Robot Path, Large Grid, A* Online, Case B (Question 5)', online=True, simulate=False, execute=False)
 
 # CASE C
-robot_large_grid.reset_robot_path_data()
-robot_large_grid.a_star([-0.5, 5.5], [1.5, -3.5])
 # Create plot
-fig, fx = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_large_grid.plot_landmark_pos(fx)
-robot_large_grid.plot_start_goal(fx)
-fx.set_aspect(1)
-fx.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case C (Question 5)')
-fx.xaxis.set_major_locator(MultipleLocator(1))
-fx.yaxis.set_major_locator(MultipleLocator(1))
-fx.xaxis.set_minor_locator(MultipleLocator(gridSizeA))
-fx.yaxis.set_minor_locator(MultipleLocator(gridSizeA))
-fx.legend()
+fig, ax6 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path
+robot_large_grid.a_star_navigation_interface([-0.5, 5.5], [1.5, -3.5], ax=ax6, title='Robot Path, Large Grid, A* Online, Case C (Question 5)', online=True, simulate=False, execute=False)
 
-plt.show()
 
 
 # QUESTION 7
 
-robot_small_grid = Robot(gridSizeB, xMin, xMax, yMin, yMax)
-robot_small_grid.import_landmark_GT(filenameLandmarks)
-robot_small_grid.mark_occupied_cells()
-
 # CASE A
-robot_small_grid.a_star([2.45, -3.55], [0.95, -1.55])
 # Create plot
-fig, dx = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_small_grid.plot_landmark_pos(dx)
-robot_small_grid.plot_start_goal(dx)
-dx.set_aspect(1)
-dx.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case A (Question 5)')
-dx.xaxis.set_major_locator(MultipleLocator(1))
-dx.yaxis.set_major_locator(MultipleLocator(1))
-dx.xaxis.set_minor_locator(MultipleLocator(gridSizeB))
-dx.yaxis.set_minor_locator(MultipleLocator(gridSizeB))
-dx.legend()
+fig, ax7 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path
+robot_small_grid.a_star_navigation_interface([2.45, -3.55], [0.95, -1.55], ax=ax7, title='Robot Path, Small Grid, A* Online, Case A (Question 7)', online=True, simulate=False, execute=False)
 
 # CASE B
-robot_small_grid.reset_robot_path_data()
-robot_small_grid.a_star([4.5, 3.5], [4.5, -1.5])
 # Create plot
-fig, ex = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_small_grid.plot_landmark_pos(ex)
-robot_small_grid.plot_start_goal(ex)
-ex.set_aspect(1)
-ex.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case B (Question 5)')
-ex.xaxis.set_major_locator(MultipleLocator(1))
-ex.yaxis.set_major_locator(MultipleLocator(1))
-ex.xaxis.set_minor_locator(MultipleLocator(gridSizeB))
-ex.yaxis.set_minor_locator(MultipleLocator(gridSizeB))
-ex.legend()
+fig, ax8 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path
+robot_small_grid.a_star_navigation_interface([2.45, -3.55], [0.95, -1.55], ax=ax8, title='Robot Path, Small Grid, A* Online, Case B (Question 7)', online=True, simulate=False, execute=False)
 
 # CASE C
-robot_small_grid.reset_robot_path_data()
-robot_small_grid.a_star([-0.5, 5.5], [1.5, -3.5])
 # Create plot
-fig, fx = plt.subplots(figsize=(8, 8))
-plt.xlim(xMin, xMax)
-plt.ylim(yMin, yMax)
-plt.grid(which='minor')
-plt.grid(which='major')
-robot_small_grid.plot_landmark_pos(fx)
-robot_small_grid.plot_start_goal(fx)
-fx.set_aspect(1)
-fx.set(xlabel='X Position (m)', ylabel='Y Position (m)', title='Robot Path, Case C (Question 5)')
-fx.xaxis.set_major_locator(MultipleLocator(1))
-fx.yaxis.set_major_locator(MultipleLocator(1))
-fx.xaxis.set_minor_locator(MultipleLocator(gridSizeB))
-fx.yaxis.set_minor_locator(MultipleLocator(gridSizeB))
-fx.legend()
+fig, ax9 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path
+robot_small_grid.a_star_navigation_interface([-0.55, 1.45], [1.95, 3.95], ax=ax9, title='Robot Path, Small Grid, A* Online, Case C (Question 7)', online=True, simulate=False, execute=False)
 
+
+
+# QUESTION 9
+
+# CASE A, NO NOISE
+# Create plot
+fig, ax10 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path and simulate robot motion
+robot_small_grid.a_star_navigation_interface([2.45, -3.55], [0.95, -1.55], ax=ax10, title='Simulated Robot Motion, No Noise, Case A (Question 9)', online=True, simulate=True, execute=False)
+
+# CASE B, NO NOISE
+# Create plot
+fig, ax11 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path and simulate robot motion
+robot_small_grid.a_star_navigation_interface([4.95, -0.05], [2.45, 0.25], ax=ax11, title='Simulated Robot Motion, No Noise, Case B (Question 9)', online=True, simulate=True, execute=False)
+
+# CASE C, NO NOISE
+# Create plot
+fig, ax12 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path and simulate robot motion
+robot_small_grid.a_star_navigation_interface([-0.55, 1.45], [1.95, 3.95], ax=ax12, title='Simulated Robot Motion, No Noise, Case C (Question 9)', online=True, simulate=True, execute=False)
+
+# CASE A, WITH NOISE
+# Create plot
+fig, ax13 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path and simulate robot motion
+robot_small_grid.a_star_navigation_interface([2.45, -3.55], [0.95, -1.55], ax=ax13, title='Simulated Robot Motion, Noise, Case A (Question 9)', online=True, simulate=True, execute=False, omegaNoise=np.pi/4)
+
+# CASE B, WITH NOISE
+# Create plot
+fig, ax14 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path and simulate robot motion
+robot_small_grid.a_star_navigation_interface([4.95, -0.05], [2.45, 0.25], ax=ax14, title='Simulated Robot Motion, Noise, Case B (Question 9)', online=True, simulate=True, execute=False, omegaNoise=np.pi/4)
+
+# CASE C, WITH NOISE
+# Create plot
+fig, ax15 = plt.subplots(figsize=figsize)
+# Run A* online navigation to generate path and simulate robot motion
+robot_small_grid.a_star_navigation_interface([-0.55, 1.45], [1.95, 3.95], ax=ax15, title='Simulated Robot Motion, Noise, Case C (Question 9)', online=True, simulate=True, execute=False, omegaNoise=np.pi/4)
+
+
+
+# QUESTION 10
+
+# CASE A, SMALL GRID
+# Create plot
+fig, ax16 = plt.subplots(figsize=figsize)
+# Move the robot using A* online planning
+robot_small_grid.a_star_navigation_interface([2.45, -3.55], [0.95, -1.55], ax=ax16, title='Robot Motion, Small Grid, Case A (Question 10)', online=True, simulate=False, execute=True, omegaNoise=np.pi/4)
+
+# CASE B, SMALL GRID
+# Create plot
+fig, ax17 = plt.subplots(figsize=figsize)
+# Move the robot using A* online planning
+robot_small_grid.a_star_navigation_interface([4.95, -0.05], [2.45, 0.25], ax=ax17, title='Robot Motion, Small Grid, Case B (Question 10)', online=True, simulate=False, execute=True, omegaNoise=np.pi/4)
+
+# CASE C, SMALL GRID
+# Create plot
+fig, ax18 = plt.subplots(figsize=figsize)
+# Move the robot using A* online planning
+robot_small_grid.a_star_navigation_interface([-0.55, 1.45], [1.95, 3.95], ax=ax18, title='Robot Motion, Small Grid, Case C (Question 10)', online=True, simulate=False, execute=True, omegaNoise=np.pi/4)
+
+
+
+# QUESTION 11
+
+# CASE A, LARGE GRID
+# Create plot
+fig, ax19 = plt.subplots(figsize=figsize)
+# Move the robot using A* online planning
+robot_large_grid.a_star_navigation_interface([2.45, -3.55], [0.95, -1.55], ax=ax19, title='Robot Motion, Large Grid, Case A (Question 11)', online=True, simulate=False, execute=True, omegaNoise=np.pi/4)
+
+# CASE B, LARGE GRID
+# Create plot
+fig, ax20 = plt.subplots(figsize=figsize)
+# Move the robot using A* online planning
+robot_large_grid.a_star_navigation_interface([4.95, -0.05], [2.45, 0.25], ax=ax20, title='Robot Motion, Large Grid, Case B (Question 11)', online=True, simulate=False, execute=True, omegaNoise=np.pi/4)
+
+# CASE C, LARGE GRID
+# Create plot
+fig, ax21 = plt.subplots(figsize=figsize)
+# Move the robot using A* online planning
+robot_large_grid.a_star_navigation_interface([-0.55, 1.45], [1.95, 3.95], ax=ax21, title='Robot Motion, Large Grid, Case C (Question 11)', online=True, simulate=False, execute=True, omegaNoise=np.pi/4)
+
+
+# Display plots
 plt.show()
